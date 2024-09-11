@@ -1,0 +1,31 @@
+#09-10-2024 Evening Hade for GIS 5571 Lab 0
+
+#imports - things i need to do anything
+import arcpy
+
+#setting up my basemap
+aprx = arcpy.mp.ArcGISProject("CURRENT")
+
+new_map = aprx.listMaps()[0]
+
+new_map.addBasemap("Human Geography Map")
+
+aprx.save()
+
+#finding my data
+arcpy.env.workspace = r"C:\Users\Pure Water\OneDrive\School Stuff\shp_trans_roads_fee"
+
+#selecting what data i want to make a buffer for
+inputLayer = "Toll_Roads_In_Minnesota"  #i want to manipulate the toll roads layer
+selectFeature = "selectFeature" #but i only need to select one feature, I-35W
+
+arcpy.management.MakeFeatureLayer(inputLayer, selectFeature, "FID = 0") #make a new layer of just I-35W
+
+#tell arcGIS to save the shapefile
+outputLayer = r"C:\Users\Pure Water\OneDrive\School Stuff\shp_trans_roads_fee\Lab0Buffer2"
+
+#make buffer
+buffer = "500 meters"
+
+#put the buffer onto I-35W
+arcpy.analysis.Buffer(selectFeature, outputLayer, buffer)

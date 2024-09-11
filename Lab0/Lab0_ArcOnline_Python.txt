@@ -1,0 +1,39 @@
+#09-11-2024 by Evening Hade for GIS 5571
+#ChatGPT was used to write 20% of this code
+
+from arcgis.gis import GIS
+gis = GIS("home")
+
+#imports:
+from arcgis import features
+from arcgis.features import FeatureLayer, use_proximity
+from arcgis.mapping import WebMap
+
+#insert fee based roads data
+# Title: Lab0_shp_trans_roads_fee | Type: Feature Service | Owner: hade0007_UMN
+item = gis.content.get("6d1183ae8d0e4e7689c51bc7f2ff850d")
+featureLayer = item.layers[0]
+
+query = "ROUTE_ID = '0100000000000035WI'"
+selected_layer = featureLayer.query(where=query)
+
+
+#selectedFeature = selected_layer.to_feature_collection()
+
+#make buffer
+buffer = 500  # in meters
+
+#apply buffer to 35-W
+outputBuffer = use_proximity.create_buffers(
+    input_layer=featureLayer.url,
+    distances=[buffer],
+    units="Meters",
+    end_type="Round"
+)
+
+#create a map
+lab0_map = WebMap()
+
+#add road and buffer to map
+lab0_map.add_layer(selected_layer)
+lab0_map.add_layer(outputBuffer)
